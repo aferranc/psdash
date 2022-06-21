@@ -1,8 +1,5 @@
 import gevent
-from gevent.monkey import patch_all
-
-patch_all()
-
+from gevent import monkey
 from gevent.pywsgi import WSGIServer
 import locale
 import argparse
@@ -17,6 +14,8 @@ from psdash import __version__
 from psdash.node import LocalNode, RemoteNode
 from psdash.web import fromtimestamp
 
+# Patch standard library with gevent-friendly functions
+monkey.patch_all()
 
 logger = getLogger("psdash.run")
 
@@ -47,7 +46,7 @@ class PsDashRunner(object):
     def _get_args(cls, args):
         parser = argparse.ArgumentParser(
             description="psdash %s - system information web dashboard"
-            % __version__
+                        % __version__
         )
         parser.add_argument(
             "-l",
@@ -57,7 +56,7 @@ class PsDashRunner(object):
             default=None,
             metavar="path",
             help="log files to make available for psdash. Patterns (e.g. /var/log/**/*.log) are supported. "
-            "This option can be used multiple times.",
+                 "This option can be used multiple times.",
         )
         parser.add_argument(
             "-b",
@@ -271,8 +270,8 @@ class PsDashRunner(object):
         )
 
         if (
-            "PSDASH_AUTH_USERNAME" in self.app.config
-            and "PSDASH_AUTH_PASSWORD" in self.app.config
+                "PSDASH_AUTH_USERNAME" in self.app.config
+                and "PSDASH_AUTH_PASSWORD" in self.app.config
         ):
             auth_handler = urllib.request.HTTPBasicAuthHandler()
             auth_handler.add_password(
@@ -316,7 +315,7 @@ class PsDashRunner(object):
 
         ssl_args = {}
         if self.app.config.get("PSDASH_HTTPS_KEYFILE") and self.app.config.get(
-            "PSDASH_HTTPS_CERTFILE"
+                "PSDASH_HTTPS_CERTFILE"
         ):
             ssl_args = {
                 "keyfile": self.app.config.get("PSDASH_HTTPS_KEYFILE"),
