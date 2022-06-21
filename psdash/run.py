@@ -1,21 +1,19 @@
 import gevent
-from gevent import monkey
+from gevent import monkey; monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 import locale
 import argparse
 import logging
 import socket
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.parse
+import urllib.error
 from logging import getLogger
 from flask import Flask
 import zerorpc
 from psdash import __version__
 from psdash.node import LocalNode, RemoteNode
 from psdash.web import fromtimestamp
-
-# Patch standard library with gevent-friendly functions
-monkey.patch_all()
 
 logger = getLogger("psdash.run")
 
@@ -43,7 +41,8 @@ class PsDashRunner(object):
         self._setup_logging()
         self._setup_context()
 
-    def _get_args(cls, args):
+    @staticmethod
+    def _get_args(args):
         parser = argparse.ArgumentParser(
             description="psdash %s - system information web dashboard"
                         % __version__
@@ -175,7 +174,8 @@ class PsDashRunner(object):
 
         return app
 
-    def _load_allowed_remote_addresses(self, app):
+    @staticmethod
+    def _load_allowed_remote_addresses(app):
         key = "PSDASH_ALLOWED_REMOTE_ADDRESSES"
         addrs = app.config.get(key)
         if not addrs:
@@ -224,7 +224,8 @@ class PsDashRunner(object):
                 register_interval,
             )
 
-    def _setup_locale(self):
+    @staticmethod
+    def _setup_locale():
         # This set locale to the user default (usually controlled by the LANG env var)
         locale.setlocale(locale.LC_ALL, "")
 
