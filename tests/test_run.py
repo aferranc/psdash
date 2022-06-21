@@ -65,48 +65,48 @@ class TestRunner(unittest2.TestCase):
     def test_register_node_creates_proper_node_dict(self):
         r = PsDashRunner()
         now = int(time.time())
-        node = r.register_node("examplehost", "example.org", 5000)
+        node = r.register_node("examplehost", "example.org", 8000)
         self.assertEqual(node.host, "example.org")
-        self.assertEqual(node.port, 5000)
+        self.assertEqual(node.port, 8000)
         self.assertEqual(node.last_registered, now)
 
     def test_reregister_node(self):
         r = PsDashRunner()
         now = int(time.time())
-        r.register_node("examplehost", "example.org", 5000)
-        node = r.register_node("examplehost", "example.org", 5000)
+        r.register_node("examplehost", "example.org", 8000)
+        node = r.register_node("examplehost", "example.org", 8000)
         self.assertEqual(node.host, "example.org")
-        self.assertEqual(node.port, 5000)
+        self.assertEqual(node.port, 8000)
         self.assertEqual(node.last_registered, now)
 
     def test_get_all_nodes(self):
         r = PsDashRunner()
-        r.register_node("examplehost", "example.org", 5000)
+        r.register_node("examplehost", "example.org", 8000)
         self.assertEqual(len(r.get_nodes()), 2)  # local + registered
 
     def test_nodes_from_config(self):
         config = {
             "PSDASH_NODES": [
-                {"name": "test-node", "host": "remotehost.org", "port": 5000}
+                {"name": "test-node", "host": "remotehost.org", "port": 8000}
             ]
         }
         r = PsDashRunner(config)
         self.assertEqual(len(r.get_nodes()), 2)
-        self.assertIn("remotehost.org:5000", r.get_nodes())
+        self.assertIn("remotehost.org:8000", r.get_nodes())
         self.assertEqual(
-            r.get_nodes()["remotehost.org:5000"].name, "test-node"
+            r.get_nodes()["remotehost.org:8000"].name, "test-node"
         )
         self.assertEqual(
-            r.get_nodes()["remotehost.org:5000"].host, "remotehost.org"
+            r.get_nodes()["remotehost.org:8000"].host, "remotehost.org"
         )
-        self.assertEqual(r.get_nodes()["remotehost.org:5000"].port, 5000)
+        self.assertEqual(r.get_nodes()["remotehost.org:8000"].port, 8000)
 
     def test_register_agent(self):
         jobs = []
         agent_options = {
             "PSDASH_AGENT": True,
-            "PSDASH_PORT": 5001,
-            "PSDASH_REGISTER_TO": "http://localhost:5000",
+            "PSDASH_PORT": 8001,
+            "PSDASH_REGISTER_TO": "http://localhost:8000",
             "PSDASH_REGISTER_AS": "the_agent",
         }
         r = PsDashRunner()
@@ -116,9 +116,9 @@ class TestRunner(unittest2.TestCase):
         jobs.append(gevent.spawn(agent.run))
         gevent.sleep(0.3)
 
-        self.assertIn("127.0.0.1:5001", r.get_nodes())
-        self.assertEqual(r.get_node("127.0.0.1:5001").name, "the_agent")
-        self.assertEqual(r.get_node("127.0.0.1:5001").port, 5001)
+        self.assertIn("127.0.0.1:8001", r.get_nodes())
+        self.assertEqual(r.get_node("127.0.0.1:8001").name, "the_agent")
+        self.assertEqual(r.get_node("127.0.0.1:8001").port, 8001)
 
         r.server.close()
         agent.server.close()
@@ -127,8 +127,8 @@ class TestRunner(unittest2.TestCase):
     def test_register_agent_without_name_defaults_to_hostname(self):
         agent_options = {
             "PSDASH_AGENT": True,
-            "PSDASH_PORT": 5001,
-            "PSDASH_REGISTER_TO": "http://localhost:5000",
+            "PSDASH_PORT": 8001,
+            "PSDASH_REGISTER_TO": "http://localhost:8000",
         }
         r = PsDashRunner()
         agent = PsDashRunner(agent_options)
@@ -138,11 +138,11 @@ class TestRunner(unittest2.TestCase):
         jobs.append(gevent.spawn(agent.run))
         gevent.sleep(0.3)
 
-        self.assertIn("127.0.0.1:5001", r.get_nodes())
+        self.assertIn("127.0.0.1:8001", r.get_nodes())
         self.assertEqual(
-            r.get_node("127.0.0.1:5001").name, socket.gethostname()
+            r.get_node("127.0.0.1:8001").name, socket.gethostname()
         )
-        self.assertEqual(r.get_node("127.0.0.1:5001").port, 5001)
+        self.assertEqual(r.get_node("127.0.0.1:8001").port, 8001)
 
         r.server.close()
         agent.server.close()
@@ -155,8 +155,8 @@ class TestRunner(unittest2.TestCase):
         agent = PsDashRunner(
             {
                 "PSDASH_AGENT": True,
-                "PSDASH_PORT": 5001,
-                "PSDASH_REGISTER_TO": "http://localhost:5000",
+                "PSDASH_PORT": 8001,
+                "PSDASH_REGISTER_TO": "http://localhost:8000",
                 "PSDASH_AUTH_USERNAME": "user",
                 "PSDASH_AUTH_PASSWORD": "pass",
             }
@@ -167,11 +167,11 @@ class TestRunner(unittest2.TestCase):
         jobs.append(gevent.spawn(agent.run))
         gevent.sleep(0.3)
 
-        self.assertIn("127.0.0.1:5001", r.get_nodes())
+        self.assertIn("127.0.0.1:8001", r.get_nodes())
         self.assertEqual(
-            r.get_node("127.0.0.1:5001").name, socket.gethostname()
+            r.get_node("127.0.0.1:8001").name, socket.gethostname()
         )
-        self.assertEqual(r.get_node("127.0.0.1:5001").port, 5001)
+        self.assertEqual(r.get_node("127.0.0.1:8001").port, 8001)
 
         r.server.close()
         agent.server.close()

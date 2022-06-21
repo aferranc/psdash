@@ -74,7 +74,7 @@ class PsDashRunner(object):
             dest="port",
             default=None,
             metavar="port",
-            help="port to listen on. Defaults to 5000.",
+            help="port to listen on. Defaults to 8000.",
         )
         parser.add_argument(
             "-d",
@@ -96,7 +96,7 @@ class PsDashRunner(object):
             dest="register_to",
             default=None,
             metavar="host:port",
-            help="The psdash node running in web mode to register this agent to on start up. e.g 10.0.1.22:5000",
+            help="The psdash node running in web mode to register this agent to on start up. e.g 10.0.1.22:8000",
         )
         parser.add_argument(
             "--register-as",
