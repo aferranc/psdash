@@ -23,7 +23,7 @@ class PsDashRunner(object):
     DEFAULT_NET_IO_COUNTER_INTERVAL = 3
     DEFAULT_REGISTER_INTERVAL = 60
     DEFAULT_BIND_HOST = "0.0.0.0"
-    DEFAULT_PORT = 5000
+    DEFAULT_PORT = 8000
     LOCAL_NODE = "localhost"
 
     @classmethod
